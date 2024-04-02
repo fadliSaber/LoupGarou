@@ -18,4 +18,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CreateRoomActivity.class);
         startActivity(intent);
     }
+    public void openJoinRoomActivity(View view) {
+        Intent intent = new Intent(this, JoinRoomActivity.class);
+        startActivity(intent);
+    }
 }
