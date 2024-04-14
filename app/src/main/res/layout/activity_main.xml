@@ -56,7 +56,7 @@
         android:background="@drawable/buttonfront"
         android:clickable="true"
         android:fontFamily="@font/trade_winds"
-        android:onClick="openJoinRoomActivity"
+        android:onClick="openpopUp"
         android:text="Rejoindre\nPartie"
         android:textColor="@color/white"
         android:textSize="20sp"

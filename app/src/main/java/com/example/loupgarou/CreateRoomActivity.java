@@ -3,6 +3,7 @@ package com.example.loupgarou;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,9 +26,9 @@ public class CreateRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_room);
         recyclerView=findViewById(R.id.rvUserList);
 
-        TextView codefield = findViewById(R.id.textView4);
-
-        String codeRoom = RandomCodeGenerator.generateCode(10);
+        Button codefield = findViewById(R.id.button4);
+        String codeRoom = "CODE\n";
+        codeRoom += RandomCodeGenerator.generateCode(5);
 
         codefield.setText(codeRoom);
 

@@ -31,7 +31,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         RecyclerData recyclerData = usersDataArrayList.get(position);
         holder.name.setText(recyclerData.getName());
-        holder.imgid.setImageResource(recyclerData.getImgid());
+        //holder.imgid.setImageResource(recyclerData.getImgid());
     }
 
     @Override
