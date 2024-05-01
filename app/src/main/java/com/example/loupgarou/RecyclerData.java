@@ -3,6 +3,7 @@ package com.example.loupgarou;
 
 public class RecyclerData {
 
+    public int index;
     private String name;
     private int imgid;
 
@@ -16,6 +17,10 @@ public class RecyclerData {
     public void setImgid(int imgid) {this.imgid = imgid;}
     public String getRole() { return role;}
     public void setRole(String role) { this.role = role;}
+
+    public int getIndex() {return index;}
+
+    public void setIndex(int index) { this.index = index;}
 
     public RecyclerData(String name, int imgid) {
         this.name = name;

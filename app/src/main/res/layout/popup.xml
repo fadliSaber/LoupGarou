@@ -57,7 +57,7 @@
         android:background="@drawable/buttonfront"
         android:backgroundTint="@color/blueDark"
         android:fontFamily="@font/tomorrow"
-        android:onClick="openJoinRoomActivity"
+        android:onClick="openCreateRoomActivity"
         android:text="Rejoindre"
         android:textAllCaps="false"
         android:textColor="@color/white"

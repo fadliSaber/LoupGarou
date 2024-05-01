@@ -15,15 +15,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<RecyclerData> usersDataArrayList;
     private Context context;
 
-    public RecyclerViewAdapter(ArrayList<RecyclerData> recyclerDataArrayList, Context context) {
+    private String color;
+
+    public RecyclerViewAdapter(ArrayList<RecyclerData> recyclerDataArrayList, Context context, String color) {
         this.usersDataArrayList = recyclerDataArrayList;
         this.context = context;
+        this.color = color;
     }
 
     @NonNull
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardusers, parent, false);
+        View view;
+        if(this.color.equals("blue")) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardusers,
+                    parent, false);
+        }
+        else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardusersred,
+                    parent, false);
+        }
         return new RecyclerViewHolder(view);
     }
 

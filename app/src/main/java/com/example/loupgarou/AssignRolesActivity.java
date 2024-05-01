@@ -34,7 +34,7 @@ public class AssignRolesActivity extends AppCompatActivity {
         recyclerDataArrayList.add(new RecyclerData("Name",R.drawable.voyante,"voyante"));
         recyclerDataArrayList.add(new RecyclerData("Name",R.drawable.sorciere,"sorcière"));
 
-        RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,this);
+        RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,this,"blue");
 
         GridLayoutManager layoutManager=new GridLayoutManager(this,3);
 
