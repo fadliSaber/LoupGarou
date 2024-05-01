@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openCreateRoomActivity(View view) {
-        Intent intent = new Intent(this, CreateRoomActivity.class);
+        Intent intent = new Intent(this, loup_game.class);
         startActivity(intent);
     }
     public void openJoinRoomActivity(View view) {
