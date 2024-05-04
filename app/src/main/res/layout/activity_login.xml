@@ -66,7 +66,7 @@
         android:layout_marginTop="130dp"
         android:background="@drawable/buttonfront"
         android:ems="10"
-        android:hint="identifiant"
+        android:hint="email"
         android:inputType="text"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -106,7 +106,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/editTextText4"
+        android:id="@+id/loginbutton"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginHorizontal="50dp"
@@ -114,7 +114,6 @@
         android:background="@drawable/buttonfront"
         android:text="Se connecter"
         android:clickable="true"
-        android:onClick="connectAccount"
         android:textSize="20sp"
         android:textAllCaps="false"
         android:textAlignment="center"

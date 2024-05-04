@@ -3,7 +3,7 @@ package com.example.loupgarou;
 
 public class RecyclerData {
 
-    public int index;
+    public String password;
     private String name;
     private int imgid;
 
@@ -18,9 +18,9 @@ public class RecyclerData {
     public String getRole() { return role;}
     public void setRole(String role) { this.role = role;}
 
-    public int getIndex() {return index;}
+    public String getPassword() {return password;}
 
-    public void setIndex(int index) { this.index = index;}
+    public void setPassword(String password) { this.password = password;}
 
     public RecyclerData(String name, int imgid) {
         this.name = name;
