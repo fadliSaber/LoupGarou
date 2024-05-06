@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +30,13 @@ public class createAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+
+        TextView textView = findViewById(R.id.textView1);
+        String text = "vous avez déjà un compte? connectez-vous !";
+        SpannableString content = new SpannableString(text);
+        content.setSpan(new UnderlineSpan(), 0, text.length(), 0);
+        textView.setText(content);
+
 
         mAuth = FirebaseAuth.getInstance();
         emailfield = findViewById(R.id.editTextText2);
@@ -67,9 +77,8 @@ public class createAccountActivity extends AppCompatActivity {
     }
 
 
-    public void createAccount(View view) {
-        //create account here
-        Intent intent = new Intent(this,MainActivity.class);
+    public void openLoginActivity(View view) {
+        Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
     }
 }

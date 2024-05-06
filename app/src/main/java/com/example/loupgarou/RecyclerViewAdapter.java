@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
-    private ArrayList<RecyclerData> usersDataArrayList;
+    private ArrayList<User> usersDataArrayList;
     private Context context;
 
     private String color;
 
-    public RecyclerViewAdapter(ArrayList<RecyclerData> recyclerDataArrayList, Context context, String color) {
+    public RecyclerViewAdapter(ArrayList<User> recyclerDataArrayList, Context context, String color) {
         this.usersDataArrayList = recyclerDataArrayList;
         this.context = context;
         this.color = color;
@@ -40,8 +40,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-        RecyclerData recyclerData = usersDataArrayList.get(position);
-        holder.name.setText(recyclerData.getName());
+        User user = usersDataArrayList.get(position);
+        holder.name.setText(user.getState());
         //holder.imgid.setImageResource(recyclerData.getImgid());
     }
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class loup_game extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private ArrayList<RecyclerData> recyclerDataArrayList;
+    private ArrayList<User> recyclerDataArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,16 +21,16 @@ public class loup_game extends AppCompatActivity {
         recyclerView=findViewById(R.id.rvUserList);
 
 
-        recyclerDataArrayList=new ArrayList<RecyclerData>();
+        recyclerDataArrayList=new ArrayList<User>();
 
-        //users who joins the room using the code, gets added in this list
+        //users who joins the Room using the code, gets added in this list
         //example
-        recyclerDataArrayList.add(new RecyclerData("Name",R.drawable.front));
-        recyclerDataArrayList.add(new RecyclerData("Name",R.drawable.front));
-        recyclerDataArrayList.add(new RecyclerData("Name",R.drawable.front));
-        recyclerDataArrayList.add(new RecyclerData("Name",R.drawable.front));
-        recyclerDataArrayList.add(new RecyclerData("Name",R.drawable.front));
-        recyclerDataArrayList.add(new RecyclerData("Name",R.drawable.front));
+        recyclerDataArrayList.add(new User());
+        recyclerDataArrayList.add(new User());
+        recyclerDataArrayList.add(new User());
+        recyclerDataArrayList.add(new User());
+        recyclerDataArrayList.add(new User());
+        recyclerDataArrayList.add(new User());
 
         RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,this,"red");
 

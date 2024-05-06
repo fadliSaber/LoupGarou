@@ -40,7 +40,6 @@
         android:background="@drawable/buttonfront"
         android:clickable="true"
         android:fontFamily="@font/trade_winds"
-        android:onClick="openCreateRoomActivity"
         android:text="Lancer\nPartie"
         android:textColor="@color/white"
         android:textSize="20sp"

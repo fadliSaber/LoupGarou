@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateRoomActivity">
+    tools:context=".waitRoomActivity">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -72,6 +72,7 @@
         android:background="@drawable/buttonfront"
         android:fontFamily="@font/tomorrow"
         android:text="Lancer\nLa partie"
+        android:onClick="startGame"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="20sp"
