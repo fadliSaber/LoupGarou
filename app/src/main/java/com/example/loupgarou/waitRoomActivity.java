@@ -73,13 +73,17 @@ public class waitRoomActivity extends AppCompatActivity {
                 Log.w("fetch users per room", "fetchUserPerRoom:onCancelled", error.toException());
             }
         });
-/*
+
         roomRef.child(roomCode).child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
-                users = snapshot.getValue(new GenericTypeIndicator<List<User>>() {});
-                adapter.notifyItemInserted(users.size()-1);
+                for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                    User user = snapshot1.getValue(User.class);
+                    users.add(user);
+                }
+                adapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -88,7 +92,7 @@ public class waitRoomActivity extends AppCompatActivity {
             }
         });
 
- */
+
 
     }
 
