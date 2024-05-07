@@ -116,6 +116,23 @@ public class waitRoomActivity extends AppCompatActivity {
                 Log.w("add nbStarts","countNb:onCancelled",error.toException());
             }
         });
+
+        roomRef.child(roomCode).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Integer nbStarts = snapshot.child("nbStarts").getValue(Integer.class);
+                if(nbStarts==snapshot.child("users").getValue(new GenericTypeIndicator<List<User>>() {
+                }).size()){
+                    Intent intent = new Intent(waitRoomActivity.this,RevealLoupActivity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("add nbStarts","countNb:onCancelled",error.toException());
+            }
+        });
     }
 
 
