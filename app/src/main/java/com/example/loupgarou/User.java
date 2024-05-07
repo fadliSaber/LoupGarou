@@ -5,11 +5,9 @@ public class User {
     private String state;
     private String role;
 
-    // Constructors, getters, and setters
-    // ...
+
 
     public User() {
-        // Default constructor required for Firebase serialization
     }
 
     public User(String id, String state, String role) {

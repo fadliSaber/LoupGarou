@@ -24,9 +24,9 @@ import java.util.List;
 
 public class waitRoomActivity extends AppCompatActivity {
 
+    private RecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
     private List<User> users;
-    private static long counter = 0;
     private String roomCode;
     private DatabaseReference roomRef;
 
@@ -42,8 +42,7 @@ public class waitRoomActivity extends AppCompatActivity {
             Toast.makeText(this, "No room CODE provided", Toast.LENGTH_SHORT).show();
             finish();
         }
-
-        recyclerView=findViewById(R.id.rvUserList);
+        recyclerView = findViewById(R.id.rvUserList);
 
         Button startGame = findViewById(R.id.button3);
         Button codefield = findViewById(R.id.button4);
@@ -51,14 +50,30 @@ public class waitRoomActivity extends AppCompatActivity {
 
         codeRoom += roomCode;
         codefield.setText(codeRoom);
-        users = new ArrayList<User>();
-        RecyclerViewAdapter adapter=new RecyclerViewAdapter((ArrayList<User>) users,this,"blue");
+
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
 
-        GridLayoutManager layoutManager=new GridLayoutManager(this,3);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        users = new ArrayList<>();
+        roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            List<User> userList;
 
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userList = snapshot.getValue(new GenericTypeIndicator<List<User>>() {
+                });
+                users = userList;
+                adapter = new RecyclerViewAdapter((ArrayList<User>) users, waitRoomActivity.this, "blue");
+                GridLayoutManager layoutManager = new GridLayoutManager(waitRoomActivity.this, 3);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("fetch users per room", "fetchUserPerRoom:onCancelled", error.toException());
+            }
+        });
+/*
         roomRef.child(roomCode).child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -73,7 +88,11 @@ public class waitRoomActivity extends AppCompatActivity {
             }
         });
 
+ */
+
     }
+
+
 
     public void startGame(View view) {
         roomRef.child(roomCode).addListenerForSingleValueEvent(new ValueEventListener() {

@@ -12,7 +12,6 @@ public class Room {
 
 
     public Room() {
-        // Default constructor required for Firebase serialization
     }
 
     public Room(String code, int gameStep, List<User> users,int nbStarts) {

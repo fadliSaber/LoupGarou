@@ -34,7 +34,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private EditText roomCode;
-    private Button joinButton;
+    private Button joinButton,popUpButon,joinPopUp;
     private DatabaseReference roomRef;
     private FirebaseAuth mAuth;
 
@@ -43,11 +43,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         joinButton = findViewById(R.id.button1);
+        popUpButon = findViewById(R.id.button2);
 
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openCreateRoomActivity(v);
+            }
+        });
+
+        popUpButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openpopUp(v);
             }
         });
 
@@ -96,18 +104,18 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
                     // Dismiss the PopupWindow
                     popupWindow.dismiss();
-                    return true; // Consume the touch event
+                    return true;
                 }
-                return false; // Continue dispatching touch event
+                return false;
             }
         });
 
-        roomCode = findViewById(R.id.editTextText3);
-        joinButton = findViewById(R.id.button9);
+        roomCode = popUpView.findViewById(R.id.editTextText3);
+        joinPopUp = popUpView.findViewById(R.id.button9);
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
         mAuth = FirebaseAuth.getInstance();
 
-        joinButton.setOnClickListener(new View.OnClickListener() {
+        joinPopUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String code = roomCode.getText().toString().trim();
@@ -128,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                             roomRef.child(code).child("users").setValue(joinedUsers);
                             Intent intent = new Intent(MainActivity.this,waitRoomActivity.class);
                             intent.putExtra("ROOM_CODE", code);
+                            startActivity(intent);
                         }
                     }
 
