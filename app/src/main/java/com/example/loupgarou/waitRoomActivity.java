@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +30,7 @@ public class waitRoomActivity extends AppCompatActivity {
     private List<User> users;
     private String roomCode;
     private DatabaseReference roomRef;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class waitRoomActivity extends AppCompatActivity {
         codefield.setText(codeRoom);
 
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
+        mAuth = FirebaseAuth.getInstance();
 
         users = new ArrayList<>();
         roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -121,10 +124,46 @@ public class waitRoomActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer nbStarts = snapshot.child("nbStarts").getValue(Integer.class);
-                if(nbStarts==snapshot.child("users").getValue(new GenericTypeIndicator<List<User>>() {
-                }).size()){
-                    Intent intent = new Intent(waitRoomActivity.this,RevealLoupActivity.class);
-                    startActivity(intent);
+                List<User> users = snapshot.child("users").getValue(new GenericTypeIndicator<List<User>>() {
+                });
+                if(nbStarts==users.size()){
+                    String userId = mAuth.getCurrentUser().getUid();
+                    Log.w("usersUid","uid : "+userId);
+                    Log.w("nbStarts","nbr : "+nbStarts);
+                    String currentUserRole = "";
+                    List<String> usersRoles = generateRoles(nbStarts);
+                    Log.w("roleTag","role : "+usersRoles.get(0));
+                    int i = 0;
+                    List<User> userList = new ArrayList<>();
+                    for(User user:users) {
+                        Log.w("userLoop","uid : "+user.getId());
+                        if(userId.equals(user.getId())) {
+                            currentUserRole = usersRoles.get(i);
+                        }
+                        user.setRole(usersRoles.get(i));
+                        userList.add(user);
+                        i++;
+                    }
+                    roomRef.child(roomCode).child("users").setValue(userList);
+                    Log.w("currentRole","role : "+currentUserRole);
+                    Log.w("currentI","id: "+i);
+                    switch (currentUserRole) {
+                        case "loup":
+                            Intent intent = new Intent(waitRoomActivity.this, RevealLoupActivity.class);
+                            intent.putExtra("ROOM_CODE",roomCode);
+                            intent.putExtra("USER_ROLE",currentUserRole);
+                            startActivity(intent);
+                            break;
+                        case "villageois":
+                            Intent intent2 = new Intent(waitRoomActivity.this, RevealVillageoisActivity.class);
+                            intent2.putExtra("ROOM_CODE",roomCode);
+                            intent2.putExtra("USER_ROLE",currentUserRole);
+                            startActivity(intent2);
+                            break;
+                        default:
+                            startActivity(new Intent(waitRoomActivity.this,RevealSorciereActivity.class));
+                            break;
+                    }
                 }
             }
 
@@ -133,6 +172,16 @@ public class waitRoomActivity extends AppCompatActivity {
                 Log.w("add nbStarts","countNb:onCancelled",error.toException());
             }
         });
+    }
+
+    private List<String> generateRoles(Integer nbStarts) {
+        List<String> answers = new ArrayList<>();
+        Log.w("nbStartsFun","nbr : "+nbStarts);
+        for(int i = 0;i<nbStarts;i++){
+            if(i==0) answers.add("loup");
+            else answers.add("villageois");
+        }
+        return answers;
     }
 
 
