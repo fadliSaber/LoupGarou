@@ -87,6 +87,7 @@ Eliminer les villageois pour gagner la partie."
       android:textAllCaps="false"
       android:textColor="@color/white"
       android:textSize="20sp"
+      android:clickable="true"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent" />

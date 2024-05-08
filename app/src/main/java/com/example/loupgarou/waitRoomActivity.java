@@ -151,14 +151,22 @@ public class waitRoomActivity extends AppCompatActivity {
                         case "loup":
                             Intent intent = new Intent(waitRoomActivity.this, RevealLoupActivity.class);
                             intent.putExtra("ROOM_CODE",roomCode);
-                            intent.putExtra("USER_ROLE",currentUserRole);
                             startActivity(intent);
                             break;
                         case "villageois":
                             Intent intent2 = new Intent(waitRoomActivity.this, RevealVillageoisActivity.class);
                             intent2.putExtra("ROOM_CODE",roomCode);
-                            intent2.putExtra("USER_ROLE",currentUserRole);
                             startActivity(intent2);
+                            break;
+                        case "sorciere":
+                            Intent intent3 = new Intent(waitRoomActivity.this, RevealSorciereActivity.class);
+                            intent3.putExtra("ROOM_CODE",roomCode);
+                            startActivity(intent3);
+                            break;
+                        case "voyante":
+                            Intent intent4 = new Intent(waitRoomActivity.this, RevealVoyanteActivity.class);
+                            intent4.putExtra("ROOM_CODE",roomCode);
+                            startActivity(intent4);
                             break;
                         default:
                             startActivity(new Intent(waitRoomActivity.this,RevealSorciereActivity.class));
@@ -179,7 +187,7 @@ public class waitRoomActivity extends AppCompatActivity {
         Log.w("nbStartsFun","nbr : "+nbStarts);
         for(int i = 0;i<nbStarts;i++){
             if(i==0) answers.add("loup");
-            else answers.add("villageois");
+            else answers.add("sorciere");
         }
         return answers;
     }

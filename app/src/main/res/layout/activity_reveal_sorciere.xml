@@ -87,6 +87,7 @@ de votre choix"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="20sp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@+id/imageView5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
