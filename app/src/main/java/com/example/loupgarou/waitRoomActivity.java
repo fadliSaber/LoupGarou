@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class waitRoomActivity extends AppCompatActivity {
+public class waitRoomActivity extends AppCompatActivity implements RecyclerViewAdapter.OnUserClickListener{
 
     private RecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
@@ -65,7 +65,7 @@ public class waitRoomActivity extends AppCompatActivity {
                 userList = snapshot.getValue(new GenericTypeIndicator<List<User>>() {
                 });
                 users = userList;
-                adapter = new RecyclerViewAdapter((ArrayList<User>) users, waitRoomActivity.this, "blue");
+                adapter = new RecyclerViewAdapter((ArrayList<User>) users, waitRoomActivity.this, "blue",waitRoomActivity.this);
                 GridLayoutManager layoutManager = new GridLayoutManager(waitRoomActivity.this, 3);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
@@ -168,9 +168,6 @@ public class waitRoomActivity extends AppCompatActivity {
                             intent4.putExtra("ROOM_CODE",roomCode);
                             startActivity(intent4);
                             break;
-                        default:
-                            startActivity(new Intent(waitRoomActivity.this,RevealSorciereActivity.class));
-                            break;
                     }
                 }
             }
@@ -187,10 +184,14 @@ public class waitRoomActivity extends AppCompatActivity {
         Log.w("nbStartsFun","nbr : "+nbStarts);
         for(int i = 0;i<nbStarts;i++){
             if(i==0) answers.add("loup");
-            else answers.add("sorciere");
+            else answers.add("villageois");
         }
         return answers;
     }
 
 
+    @Override
+    public void onUserClick(String userId, String activity) {
+        return;
+    }
 }

@@ -62,6 +62,8 @@ public class RevealVoyanteActivity extends AppCompatActivity {
                 }).size()){
                     Intent intent = new Intent(RevealVoyanteActivity.this,voyante_game.class);
                     intent.putExtra("ROOM_CODE",roomCode);
+                    intent.putExtra("USER_ROLE","voyante");
+                    intent.putExtra("gameStep",0);
                     startActivity(intent);
                 }
             }
@@ -79,8 +81,10 @@ public class RevealVoyanteActivity extends AppCompatActivity {
                 List<User> users = snapshot.child("users").getValue(new GenericTypeIndicator<List<User>>() {
                 });
                 if(nbStarts==2*users.size()){
-                    Intent intent = new Intent(RevealVoyanteActivity.this,voyante_game.class);
+                        Intent intent = new Intent(RevealVoyanteActivity.this,voyante_game.class);
                     intent.putExtra("ROOM_CODE",roomCode);
+                    intent.putExtra("USER_ROLE","voyante");
+                    intent.putExtra("gameStep",0);
                     startActivity(intent);
                 }
             }

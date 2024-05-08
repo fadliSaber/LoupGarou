@@ -127,6 +127,7 @@ la potion à utiliser"
         android:layout_marginBottom="110dp"
         android:background="@drawable/buttonfrontred"
         android:src="@drawable/skull_sorciere"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -139,6 +140,7 @@ la potion à utiliser"
         android:background="@drawable/buttonfrontgreen"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_add"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

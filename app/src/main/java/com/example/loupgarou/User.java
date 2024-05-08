@@ -4,16 +4,18 @@ public class User {
     private String id; // ID obtained from Firebase Authentication
     private String state;
     private String role;
+    private int vote;
 
 
 
     public User() {
     }
 
-    public User(String id, String state, String role) {
+    public User(String id, String state, String role,int vote) {
         this.id = id;
         this.state = state;
         this.role = role;
+        this.vote = vote;
     }
 
     public String getId() {
@@ -38,6 +40,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public int getVote() {
+        return vote;
+    }
+
+    public void setVote(int vote) {
+        this.vote = vote;
     }
 }
 

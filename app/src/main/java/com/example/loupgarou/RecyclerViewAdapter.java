@@ -14,13 +14,18 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
     private ArrayList<User> usersDataArrayList;
     private Context context;
-
     private String color;
+    private OnUserClickListener clickListener;
 
-    public RecyclerViewAdapter(ArrayList<User> recyclerDataArrayList, Context context, String color) {
+    public RecyclerViewAdapter(ArrayList<User> recyclerDataArrayList, Context context, String color,OnUserClickListener clickListener) {
         this.usersDataArrayList = recyclerDataArrayList;
         this.context = context;
         this.color = color;
+        this.clickListener = clickListener;
+    }
+
+    public interface OnUserClickListener {
+        void onUserClick(String userId,String activity);
     }
 
     @NonNull
@@ -43,6 +48,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         User user = usersDataArrayList.get(position);
         holder.name.setText(user.getState());
         //holder.imgid.setImageResource(recyclerData.getImgid());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickListener.onUserClick(user.getId(),getActivityName(context));
+            }
+        });
+    }
+
+    private String getActivityName(Context context) {
+        // Determine the source activity based on the context
+        if (context instanceof sorciere_game) {
+            return "sorciere_game";
+        } else if (context instanceof loup_game) {
+            return "loup_game";
+        } else if (context instanceof voyante_game){
+            return "voyante_game";
+        }else {
+            return "unknown";
+        }
     }
 
     @Override

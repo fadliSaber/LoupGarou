@@ -35,12 +35,8 @@ public class RevealSorciereActivity extends AppCompatActivity {
 
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
         Intent intent = getIntent();
-        if(intent!=null && intent.hasExtra("ROOM_CODE")) {
-            roomCode = intent.getStringExtra("ROOM_CODE");
-        }else{
-            Toast.makeText(this, "No room CODE provided", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        roomCode = intent.getStringExtra("ROOM_CODE");
+
 
         continueBtn = findViewById(R.id.button5);
 
@@ -62,6 +58,8 @@ public class RevealSorciereActivity extends AppCompatActivity {
                 }).size()){
                     Intent intent = new Intent(RevealSorciereActivity.this,sorciere_game.class);
                     intent.putExtra("ROOM_CODE",roomCode);
+                    intent.putExtra("USER_ROLE","sorciere");
+                    intent.putExtra("gameStep",0);
                     startActivity(intent);
                 }
             }
@@ -81,6 +79,8 @@ public class RevealSorciereActivity extends AppCompatActivity {
                 if(nbStarts==2*users.size()){
                     Intent intent = new Intent(RevealSorciereActivity.this,sorciere_game.class);
                     intent.putExtra("ROOM_CODE",roomCode);
+                    intent.putExtra("USER_ROLE","sorciere");
+                    intent.putExtra("gameStep",0);
                     startActivity(intent);
                 }
             }

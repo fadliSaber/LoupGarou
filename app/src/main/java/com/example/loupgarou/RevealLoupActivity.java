@@ -62,6 +62,8 @@ public class RevealLoupActivity extends AppCompatActivity {
                 }).size()){
                     Intent intent = new Intent(RevealLoupActivity.this,loup_game.class);
                     intent.putExtra("ROOM_CODE",roomCode);
+                    intent.putExtra("USER_ROLE","loup");
+                    intent.putExtra("gameStep",0);
                     startActivity(intent);
                 }
             }
@@ -81,6 +83,8 @@ public class RevealLoupActivity extends AppCompatActivity {
                 if(nbStarts==2*users.size()){
                     Intent intent = new Intent(RevealLoupActivity.this,loup_game.class);
                     intent.putExtra("ROOM_CODE",roomCode);
+                    intent.putExtra("USER_ROLE","loup");
+                    intent.putExtra("gameStep",0);
                     startActivity(intent);
                 }
             }

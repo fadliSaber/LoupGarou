@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
         String code = generateUniqueCode(5);
-        User user = new User(mAuth.getCurrentUser().getUid(),"actif","");
+        User user = new User(mAuth.getCurrentUser().getUid(),"actif","",0);
         List<User> users = new ArrayList<>();
         users.add(user);
         Room room = new Room(code,0,users,0);
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         }else {
                             Room room = snapshot.getValue(Room.class);
                             String userId = mAuth.getCurrentUser().getUid();
-                            User user = new User(userId, "actif", "");
+                            User user = new User(userId, "actif", "",0);
                             List<User> joinedUsers = snapshot.child("users")
                                     .getValue(new GenericTypeIndicator<List<User>>() {
                                     });
