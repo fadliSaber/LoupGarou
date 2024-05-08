@@ -184,7 +184,7 @@ public class waitRoomActivity extends AppCompatActivity implements RecyclerViewA
         Log.w("nbStartsFun","nbr : "+nbStarts);
         for(int i = 0;i<nbStarts;i++){
             if(i==0) answers.add("loup");
-            else answers.add("villageois");
+            else answers.add("sorciere");
         }
         return answers;
     }

@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,12 +30,14 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
     private ArrayList<User> recyclerDataArrayList;
     private DatabaseReference roomRef;
     private String roomCode,userRole;
-    private int gameStep;
+    private Integer gameStep;
     private List<User> users;
     private RecyclerViewAdapter adapter;
     private ImageButton killBtn,ReviveBtn;
     private List<User> userList,userList1;
     private String userSelectedId;
+    private TextView gameDesc,phaseDesc,NightDesc;
+    private ScrollView scrollView;
 
 
 
@@ -41,18 +45,22 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sorciere_game);
-        recyclerView=findViewById(R.id.rvUserList);
+        recyclerView = findViewById(R.id.rvUserList);
 
         Intent intent = getIntent();
         roomCode = intent.getStringExtra("ROOM_CODE");
         userRole = intent.getStringExtra("USER_ROLE");
-        gameStep = intent.getIntExtra("gameStep",1);
         killBtn = findViewById(R.id.button10);
         ReviveBtn = findViewById(R.id.button11);
+        scrollView = findViewById(R.id.scrollView2);
         users = new ArrayList<>();
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
         userList = new ArrayList<>();
         userList1 = new ArrayList<>();
+
+        phaseDesc = findViewById(R.id.textView11);
+        gameDesc = findViewById(R.id.textView12);
+        NightDesc = findViewById(R.id.textView4);
 
         roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -61,7 +69,7 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
                 userList = snapshot.getValue(new GenericTypeIndicator<List<User>>() {
                 });
                 users = userList;
-                adapter = new RecyclerViewAdapter((ArrayList<User>) users, sorciere_game.this, "blue",sorciere_game.this);
+                adapter = new RecyclerViewAdapter((ArrayList<User>) users, sorciere_game.this, "blue", sorciere_game.this);
                 GridLayoutManager layoutManager = new GridLayoutManager(sorciere_game.this, 3);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
@@ -73,72 +81,116 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
             }
         });
 
-        ReviveBtn.setOnClickListener(new View.OnClickListener() {
+        roomRef.child(roomCode).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot snapshot1:snapshot.getChildren()) {
-                            User user = snapshot1.getValue(User.class);
-                            if(user.getState().equals("killed")){
-                                user.setState("actif");
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                gameStep = snapshot.child("gameStep").getValue(Integer.class);
+                switch (gameStep % 4) {
+                    case 0:
+                        phaseDesc.setText("Phase 1:");
+                        gameDesc.setText("Les Loups-Garous se réveillent \n" +
+                                "et désignent une nouvelle victime");
+                        killBtn.setVisibility(View.INVISIBLE);
+                        ReviveBtn.setVisibility(View.INVISIBLE);
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 1:
+                        phaseDesc.setText("Phase 2:");
+                        gameDesc.setText("Choisissez votre cible et\n" +
+                                "la potion à utiliser");
+                        killBtn.setVisibility(View.VISIBLE);
+                        ReviveBtn.setVisibility(View.VISIBLE);
+                        scrollView.setVisibility(View.VISIBLE);
+                        ReviveBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                revive(v);
                             }
-                            userList1.add(user);
-                        }
-                        //roomRef.child(roomCode).child("users").setValue(userList1);
+                        });
 
-                    }
+                        killBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                killPlayer(v);
+                            }
+                        });
+                        break;
+                    case 2:
+                        phaseDesc.setText("Phase 3:");
+                        gameDesc.setText("La Voyante se réveille, et désigne \n" +
+                                "un joueur dont elle veut sonder \n" +
+                                "la véritable personnalité");
+                        killBtn.setVisibility(View.INVISIBLE);
+                        ReviveBtn.setVisibility(View.INVISIBLE);
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 3:
+                        phaseDesc.setText("Phase 4:");
+                        NightDesc.setText("Jour 1:");
+                        gameDesc.setText("C’est le matin, le village se réveille.\n" +
+                                "Discutez et votez un joueur\n" +
+                                "pour l’éliminer");
+                        killBtn.setVisibility(View.INVISIBLE);
+                        ReviveBtn.setVisibility(View.INVISIBLE);
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-                Intent intent = new Intent(sorciere_game.this,villageois_game.class);
-                intent.putExtra("ROOM_CODE",roomCode);
-                intent.putExtra("USER_ROLE",userRole);
-                intent.putExtra("gameStep",gameStep);
-                startActivity(intent);
-                finish();
             }
         });
-
-        killBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        userList.clear();
-                        for(DataSnapshot snapshot1:snapshot.getChildren()) {
-                            User user = snapshot1.getValue(User.class);
-                            if(user.getId().equals(userSelectedId)){
-                                user.setState("killed");
-                            }
-                            userList.add(user);
-                        }
-                        //roomRef.child(roomCode).child("users").setValue(userList);
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-                Intent intent = new Intent(sorciere_game.this,villageois_game.class);
-                intent.putExtra("ROOM_CODE",roomCode);
-                intent.putExtra("USER_ROLE",userRole);
-                intent.putExtra("gameStep",gameStep);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
-
     }
+
+    private void killPlayer(View v) {
+        roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userList.clear();
+                for(DataSnapshot snapshot1:snapshot.getChildren()) {
+                    User user = snapshot1.getValue(User.class);
+                    if(user.getId().equals(userSelectedId)){
+                        user.setState("killed");
+                    }
+                    userList.add(user);
+                }
+                roomRef.child(roomCode).child("users").setValue(userList);
+                roomRef.child(roomCode).child("gameStep").setValue(gameStep+1);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void revive(View v) {
+        roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userList1.clear();
+                for(DataSnapshot snapshot1:snapshot.getChildren()) {
+                    User user = snapshot1.getValue(User.class);
+                    if(user.getState().equals("killed")){
+                        user.setState("actif");
+                    }
+                    userList1.add(user);
+                }
+                roomRef.child(roomCode).child("users").setValue(userList1);
+                roomRef.child(roomCode).child("gameStep").setValue(gameStep+1);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
 
     @Override
     public void onUserClick(String userId, String activity) {
