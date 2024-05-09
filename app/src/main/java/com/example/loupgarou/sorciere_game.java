@@ -81,10 +81,10 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
             }
         });
 
-        roomRef.child(roomCode).addValueEventListener(new ValueEventListener() {
+        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                gameStep = snapshot.child("gameStep").getValue(Integer.class);
+                gameStep = snapshot.getValue(Integer.class);
                 switch (gameStep % 4) {
                     case 0:
                         phaseDesc.setText("Phase 1:");

@@ -42,11 +42,16 @@ public class villageois_game extends AppCompatActivity {
 
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
 
-        roomRef.child(roomCode).addValueEventListener(new ValueEventListener() {
+        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                gameStep = snapshot.child("gameStep").getValue(Integer.class);
-                switch (gameStep%5) {
+                gameStep = snapshot.getValue(Integer.class);
+                switch (gameStep%4) {
+                    case 0:
+                        phaseDesc.setText("Phase 1:");
+                        gameDesc.setText("Les Loups-Garous se réveillent \n" +
+                                "et désignent une nouvelle victime");
+                        break;
                     case 1:
                         phaseDesc.setText("Phase 2:");
                         gameDesc.setText("La Sorcière se réveille. Va-t-elle \n" +

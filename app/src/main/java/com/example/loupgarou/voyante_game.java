@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -29,12 +30,13 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
     private ArrayList<User> recyclerDataArrayList;
     private DatabaseReference roomRef;
     private String roomCode,userRole;
-    private int gameStep;
+    private Integer gameStep;
     private List<User> users;
     private RecyclerViewAdapter adapter;
     private TextView revealUser,uRevealUser,uuRevealUser;
     private List<User> userList;
     private String userSelectedId;
+    private ScrollView scrollView;
 
 
 
@@ -47,10 +49,10 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
         Intent intent = getIntent();
         roomCode = intent.getStringExtra("ROOM_CODE");
         userRole = intent.getStringExtra("USER_ROLE");
-        gameStep = intent.getIntExtra("gameStep",1);
         revealUser = findViewById(R.id.textView4);
         uRevealUser = findViewById(R.id.textView11);
         uuRevealUser = findViewById(R.id.textView12);
+        scrollView = findViewById(R.id.scrollView2);
         users = new ArrayList<>();
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
         userList = new ArrayList<>();
@@ -74,9 +76,52 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
             }
         });
 
+        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                gameStep = snapshot.getValue(Integer.class);
+                switch (gameStep % 4) {
+                    case 0:
+                        uRevealUser.setText("Phase 1:");
+                        uuRevealUser.setText("Les Loups-Garous se réveillent \n" +
+                                "et désignent une nouvelle victime");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 1:
+                        uRevealUser.setText("Phase 2:");
+                        uuRevealUser.setText("La Sorcière se réveille. Va-t-elle \n" +
+                                "utiliser sa potion de guérison, \n" +
+                                "ou d’empoisonnement ?");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 2:
+                        uRevealUser.setText("Phase 3:");
+                        uuRevealUser.setText("Choisissez un joueur");
+                        scrollView.setVisibility(View.VISIBLE);
+
+                        break;
+                    case 3:
+                        uRevealUser.setText("Phase 4:");
+                        revealUser.setText("Jour 1:");
+                        uuRevealUser.setText("C’est le matin, le village se réveille.\n" +
+                                "Discutez et votez un joueur\n" +
+                                "pour l’éliminer");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
 
     }
+
+
 
     @Override
     public void onUserClick(String userId, String activity) {
@@ -91,16 +136,19 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
                             uRevealUser.setText("");
                             uuRevealUser.setText("");
                             revealUser.setText(user.getRole());
-                            int textColor = ContextCompat.getColor(voyante_game.this, R.color.black);
+                            int textColor = ContextCompat.getColor(voyante_game.this, R.color.white);
                             revealUser.setTextColor(textColor);
-                            Intent intent = new Intent(voyante_game.this,villageois_game.class);
-                            intent.putExtra("ROOMD_CODE",roomCode);
-                            intent.putExtra("USER_ROLE",userRole);
-                            intent.putExtra("gameStep",gameStep+1);
-                            startActivity(intent);
-                            finish();
+                            break;
                         }
                     }
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            roomRef.child(roomCode).child("gameStep").setValue(gameStep+1);
+                        }
+                    };
+                    revealUser.postDelayed(runnable,5000);
+
                 }
 
                 @Override

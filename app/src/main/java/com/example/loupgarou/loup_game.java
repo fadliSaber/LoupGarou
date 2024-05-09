@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +35,8 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
     private List<User> userList,userList2,userList3;
     private String userSelectedId,userIdMax;
     private int count = 0,max_ = 0,count2 = 0;
+    private TextView gameDesc,phaseDesc,NightDesc;
+    private ScrollView scrollView;
 
 
 
@@ -52,6 +55,10 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
         userList = new ArrayList<>();
         userList2 = new ArrayList<>();
         userList3 = new ArrayList<>();
+        phaseDesc = findViewById(R.id.textView11);
+        gameDesc = findViewById(R.id.textView12);
+        NightDesc = findViewById(R.id.textView4);
+        scrollView = findViewById(R.id.scrollView2);
 
         roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -60,15 +67,13 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
                 userList.clear();
                 for(DataSnapshot snapshot1:snapshot.getChildren()) {
                     User user = snapshot1.getValue(User.class);
+                    users.add(user);
                     if(user.getRole().equals("loup")) {
                         count++;
-                    }
-
-                    userList.add(user);
+                    }else userList.add(user);
                 }
-                users = userList;
                 count2 = users.size();
-                adapter = new RecyclerViewAdapter((ArrayList<User>) users, loup_game.this, "blue",loup_game.this);
+                adapter = new RecyclerViewAdapter((ArrayList<User>) userList, loup_game.this, "red",loup_game.this);
                 GridLayoutManager layoutManager = new GridLayoutManager(loup_game.this, 3);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
@@ -80,7 +85,47 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
             }
         });
 
+        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                gameStep = snapshot.getValue(Integer.class);
+                switch (gameStep%4) {
+                    case 0:
+                        phaseDesc.setText("Phase 1:");
+                        gameDesc.setText("Votez pour la cible que\n" +
+                                "vous voulez eliminer");
+                        scrollView.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        phaseDesc.setText("Phase 2:");
+                        gameDesc.setText("La Sorcière se réveille. Va-t-elle \n" +
+                                "utiliser sa potion de guérison, \n" +
+                                "ou d’empoisonnement ?");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 2:
+                        phaseDesc.setText("Phase 3:");
+                        gameDesc.setText("La Voyante se réveille, et désigne \n" +
+                                "un joueur dont elle veut sonder \n" +
+                                "la véritable personnalité");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 3:
+                        phaseDesc.setText("Phase 4:");
+                        NightDesc.setText("Jour 1:");
+                        gameDesc.setText("C’est le matin, le village se réveille.\n" +
+                                "Discutez et votez un joueur\n" +
+                                "pour l’éliminer");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
 
@@ -88,56 +133,43 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
 
     @Override
     public void onUserClick(String userId, String activity) {
+        Integer val = 2*count2+count;
         if (activity.equals("loup_game")) {
             userSelectedId = userId;
             roomRef.child(roomCode).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Integer nbStarts = snapshot.child("nbStarts").getValue(Integer.class);
-                    DataSnapshot snapshot2 = snapshot.child("users");
                     userList2.clear();
-                    for(DataSnapshot snapshot1:snapshot2.getChildren()) {
+                    max_ = 0;
+                    int i = 0;
+                    int posMax = 0;
+                    for(DataSnapshot snapshot1:snapshot.child("users").getChildren()) {
                         User user = snapshot1.getValue(User.class);
-                        if(user.getId().equals(userSelectedId)){
+                        if(user.getId().equals(userSelectedId)) {
                             user.setVote(user.getVote()+1);
-                            if(user.getVote()>max_){
+                            if(user.getVote()>max_) {
+                                Log.w("highestVote","highest: "+user.getVote());
                                 max_ = user.getVote();
                                 userIdMax = user.getId();
+                                posMax = i;
                             }
                         }
+                        i++;
                         userList2.add(user);
                     }
                     roomRef.child(roomCode).child("users").setValue(userList2);
                     roomRef.child(roomCode).child("nbStarts").setValue(nbStarts+1);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-
-            roomRef.child(roomCode).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Integer nbStarts = snapshot.child("nbStarts").getValue(Integer.class);
-                    if(nbStarts-2*count2==count){
-                        DataSnapshot snapshot2 = snapshot.child("users");
-                        userList3.clear();
-                        for(DataSnapshot snapshot1:snapshot2.getChildren()) {
-                            User user = snapshot1.getValue(User.class);
-                            if(user.getId().equals(userIdMax)){
-                                user.setState("killed");
-                            }
-                            userList3.add(user);
-                        }
-                        roomRef.child(roomCode).child("users").setValue(userList3);
-                        Intent intent = new Intent(loup_game.this,villageois_game.class);
-                        intent.putExtra("ROOM_CODE",roomCode);
-                        intent.putExtra("USER_ROLE",userRole);
-                        intent.putExtra("gameStep",gameStep+1);
-                        startActivity(intent);
+                    Log.w("TheVal","val: "+val);
+                    Log.w("TheCount2","val: "+count2);
+                    Log.w("TheCount","val: "+count);
+                    if(nbStarts+1==val) {
+                        User user = userList2.get(posMax);
+                        user.setState("killed");
+                        userList2.set(posMax,user);
+                        Log.w("userVote","vote: "+user.getVote());
+                        roomRef.child(roomCode).child("users").setValue(userList2);
+                        roomRef.child(roomCode).child("gameStep").setValue(gameStep+1);
                     }
                 }
 
@@ -146,6 +178,10 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
 
                 }
             });
+
+
+
+
         }
     }
 }
