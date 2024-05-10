@@ -62,32 +62,17 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
         gameDesc = findViewById(R.id.textView12);
         NightDesc = findViewById(R.id.textView4);
 
-        roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userList = snapshot.getValue(new GenericTypeIndicator<List<User>>() {
-                });
-                users = userList;
-                adapter = new RecyclerViewAdapter((ArrayList<User>) users, sorciere_game.this, "blue", sorciere_game.this);
-                GridLayoutManager layoutManager = new GridLayoutManager(sorciere_game.this, 3);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w("fetch users per room", "fetchUserPerRoom:onCancelled", error.toException());
-            }
-        });
+        listUsers();
 
         roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 gameStep = snapshot.getValue(Integer.class);
+                int x = gameStep/4 + 1;
                 switch (gameStep % 4) {
                     case 0:
                         phaseDesc.setText("Phase 1:");
+                        NightDesc.setText("Nuit "+x+":");
                         gameDesc.setText("Les Loups-Garous se réveillent \n" +
                                 "et désignent une nouvelle victime");
                         killBtn.setVisibility(View.INVISIBLE);
@@ -95,7 +80,9 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
                         scrollView.setVisibility(View.INVISIBLE);
                         break;
                     case 1:
+                        listUsers();
                         phaseDesc.setText("Phase 2:");
+                        NightDesc.setText("Nuit "+x+":");
                         gameDesc.setText("Choisissez votre cible et\n" +
                                 "la potion à utiliser");
                         killBtn.setVisibility(View.VISIBLE);
@@ -117,6 +104,7 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
                         break;
                     case 2:
                         phaseDesc.setText("Phase 3:");
+                        NightDesc.setText("Nuit "+x+":");
                         gameDesc.setText("La Voyante se réveille, et désigne \n" +
                                 "un joueur dont elle veut sonder \n" +
                                 "la véritable personnalité");
@@ -126,7 +114,7 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
                         break;
                     case 3:
                         phaseDesc.setText("Phase 4:");
-                        NightDesc.setText("Jour 1:");
+                        NightDesc.setText("Jour "+x+":");
                         gameDesc.setText("C’est le matin, le village se réveille.\n" +
                                 "Discutez et votez un joueur\n" +
                                 "pour l’éliminer");
@@ -140,6 +128,27 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+    }
+
+    public void listUsers() {
+        roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userList = snapshot.getValue(new GenericTypeIndicator<List<User>>() {
+                });
+                users = userList;
+                adapter = new RecyclerViewAdapter((ArrayList<User>) users, sorciere_game.this, "blue", sorciere_game.this);
+                GridLayoutManager layoutManager = new GridLayoutManager(sorciere_game.this, 3);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("fetch users per room", "fetchUserPerRoom:onCancelled", error.toException());
             }
         });
     }

@@ -57,6 +57,58 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
         roomRef = FirebaseDatabase.getInstance().getReference("rooms");
         userList = new ArrayList<>();
 
+        userList();
+        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                gameStep = snapshot.getValue(Integer.class);
+                int x = gameStep/4 + 1;
+                switch (gameStep % 4) {
+                    case 0:
+                        uRevealUser.setText("Phase 1:");
+                        revealUser.setText("Nuit "+x+":");
+                        uuRevealUser.setText("Les Loups-Garous se réveillent \n" +
+                                "et désignent une nouvelle victime");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 1:
+                        uRevealUser.setText("Phase 2:");
+                        revealUser.setText("Nuit "+x+":");
+                        uuRevealUser.setText("La Sorcière se réveille. Va-t-elle \n" +
+                                "utiliser sa potion de guérison, \n" +
+                                "ou d’empoisonnement ?");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 2:
+                        userList();
+                        uRevealUser.setText("Phase 3:");
+                        revealUser.setText("Nuit "+x+":");
+                        uuRevealUser.setText("Choisissez un joueur");
+                        scrollView.setVisibility(View.VISIBLE);
+
+                        break;
+                    case 3:
+                        uRevealUser.setText("Phase 4:");
+                        revealUser.setText("Jour "+x+":");
+                        uuRevealUser.setText("C’est le matin, le village se réveille.\n" +
+                                "Discutez et votez un joueur\n" +
+                                "pour l’éliminer");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+    }
+
+    public void userList() {
         roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -76,52 +128,7 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
             }
         });
 
-        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                gameStep = snapshot.getValue(Integer.class);
-                switch (gameStep % 4) {
-                    case 0:
-                        uRevealUser.setText("Phase 1:");
-                        uuRevealUser.setText("Les Loups-Garous se réveillent \n" +
-                                "et désignent une nouvelle victime");
-                        scrollView.setVisibility(View.INVISIBLE);
-                        break;
-                    case 1:
-                        uRevealUser.setText("Phase 2:");
-                        uuRevealUser.setText("La Sorcière se réveille. Va-t-elle \n" +
-                                "utiliser sa potion de guérison, \n" +
-                                "ou d’empoisonnement ?");
-                        scrollView.setVisibility(View.INVISIBLE);
-                        break;
-                    case 2:
-                        uRevealUser.setText("Phase 3:");
-                        uuRevealUser.setText("Choisissez un joueur");
-                        scrollView.setVisibility(View.VISIBLE);
-
-                        break;
-                    case 3:
-                        uRevealUser.setText("Phase 4:");
-                        revealUser.setText("Jour 1:");
-                        uuRevealUser.setText("C’est le matin, le village se réveille.\n" +
-                                "Discutez et votez un joueur\n" +
-                                "pour l’éliminer");
-                        scrollView.setVisibility(View.INVISIBLE);
-                        break;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-
     }
-
-
 
     @Override
     public void onUserClick(String userId, String activity) {

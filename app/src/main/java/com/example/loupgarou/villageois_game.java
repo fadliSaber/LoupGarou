@@ -46,27 +46,31 @@ public class villageois_game extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 gameStep = snapshot.getValue(Integer.class);
+                int x = gameStep/4 + 1;
                 switch (gameStep%4) {
                     case 0:
                         phaseDesc.setText("Phase 1:");
+                        NightDesc.setText("Nuit "+x+":");
                         gameDesc.setText("Les Loups-Garous se réveillent \n" +
                                 "et désignent une nouvelle victime");
                         break;
                     case 1:
                         phaseDesc.setText("Phase 2:");
+                        NightDesc.setText("Nuit "+x+":");
                         gameDesc.setText("La Sorcière se réveille. Va-t-elle \n" +
                                 "utiliser sa potion de guérison, \n" +
                                 "ou d’empoisonnement ?");
                         break;
                     case 2:
                         phaseDesc.setText("Phase 3:");
+                        NightDesc.setText("Nuit "+x+":");
                         gameDesc.setText("La Voyante se réveille, et désigne \n" +
                                 "un joueur dont elle veut sonder \n" +
                                 "la véritable personnalité");
                         break;
                     case 3:
                         phaseDesc.setText("Phase 4:");
-                        NightDesc.setText("Jour 1:");
+                        NightDesc.setText("Jour "+x+":");
                         gameDesc.setText("C’est le matin, le village se réveille.\n" +
                                 "Discutez et votez un joueur\n" +
                                 "pour l’éliminer");

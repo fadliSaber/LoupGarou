@@ -60,11 +60,65 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
         NightDesc = findViewById(R.id.textView4);
         scrollView = findViewById(R.id.scrollView2);
 
+        listUsers();
+        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                gameStep = snapshot.getValue(Integer.class);
+                int x = gameStep/4 + 1;
+                switch (gameStep%4) {
+                    case 0:
+                        listUsers();
+                        phaseDesc.setText("Phase 1:");
+                        NightDesc.setText("Nuit "+x+":");
+                        gameDesc.setText("Votez pour la cible que\n" +
+                                "vous voulez eliminer");
+                        scrollView.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        phaseDesc.setText("Phase 2:");
+                        NightDesc.setText("Nuit "+x+":");
+                        gameDesc.setText("La Sorcière se réveille. Va-t-elle \n" +
+                                "utiliser sa potion de guérison, \n" +
+                                "ou d’empoisonnement ?");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 2:
+                        phaseDesc.setText("Phase 3:");
+                        NightDesc.setText("Nuit "+x+":");
+                        gameDesc.setText("La Voyante se réveille, et désigne \n" +
+                                "un joueur dont elle veut sonder \n" +
+                                "la véritable personnalité");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                    case 3:
+                        phaseDesc.setText("Phase 4:");
+                        NightDesc.setText("Jour "+x+":");
+                        gameDesc.setText("C’est le matin, le village se réveille.\n" +
+                                "Discutez et votez un joueur\n" +
+                                "pour l’éliminer");
+                        scrollView.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+    }
+
+    public void listUsers() {
         roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userList.clear();
+                count = 0;
                 for(DataSnapshot snapshot1:snapshot.getChildren()) {
                     User user = snapshot1.getValue(User.class);
                     users.add(user);
@@ -84,56 +138,11 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
                 Log.w("fetch users per room", "fetchUserPerRoom:onCancelled", error.toException());
             }
         });
-
-        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                gameStep = snapshot.getValue(Integer.class);
-                switch (gameStep%4) {
-                    case 0:
-                        phaseDesc.setText("Phase 1:");
-                        gameDesc.setText("Votez pour la cible que\n" +
-                                "vous voulez eliminer");
-                        scrollView.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                        phaseDesc.setText("Phase 2:");
-                        gameDesc.setText("La Sorcière se réveille. Va-t-elle \n" +
-                                "utiliser sa potion de guérison, \n" +
-                                "ou d’empoisonnement ?");
-                        scrollView.setVisibility(View.INVISIBLE);
-                        break;
-                    case 2:
-                        phaseDesc.setText("Phase 3:");
-                        gameDesc.setText("La Voyante se réveille, et désigne \n" +
-                                "un joueur dont elle veut sonder \n" +
-                                "la véritable personnalité");
-                        scrollView.setVisibility(View.INVISIBLE);
-                        break;
-                    case 3:
-                        phaseDesc.setText("Phase 4:");
-                        NightDesc.setText("Jour 1:");
-                        gameDesc.setText("C’est le matin, le village se réveille.\n" +
-                                "Discutez et votez un joueur\n" +
-                                "pour l’éliminer");
-                        scrollView.setVisibility(View.INVISIBLE);
-                        break;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-
     }
 
     @Override
     public void onUserClick(String userId, String activity) {
-        Integer val = 2*count2+count;
+        Integer val = count;
         if (activity.equals("loup_game")) {
             userSelectedId = userId;
             roomRef.child(roomCode).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -170,6 +179,7 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
                         Log.w("userVote","vote: "+user.getVote());
                         roomRef.child(roomCode).child("users").setValue(userList2);
                         roomRef.child(roomCode).child("gameStep").setValue(gameStep+1);
+                        roomRef.child(roomCode).child("nbStarts").setValue(0);
                     }
                 }
 

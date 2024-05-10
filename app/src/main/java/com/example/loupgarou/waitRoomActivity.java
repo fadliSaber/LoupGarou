@@ -145,6 +145,7 @@ public class waitRoomActivity extends AppCompatActivity implements RecyclerViewA
                         i++;
                     }
                     roomRef.child(roomCode).child("users").setValue(userList);
+                    roomRef.child(roomCode).child("nbStarts").setValue(0);
                     Log.w("currentRole","role : "+currentUserRole);
                     Log.w("currentI","id: "+i);
                     switch (currentUserRole) {

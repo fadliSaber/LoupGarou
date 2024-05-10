@@ -54,7 +54,7 @@ public class RevealSorciereActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer nbStarts = snapshot.child("nbStarts").getValue(Integer.class);
                 roomRef.child(roomCode).child("nbStarts").setValue(nbStarts+1);
-                if(nbStarts+1==2*snapshot.child("users").getValue(new GenericTypeIndicator<List<User>>() {
+                if(nbStarts+1==snapshot.child("users").getValue(new GenericTypeIndicator<List<User>>() {
                 }).size()){
                     Intent intent = new Intent(RevealSorciereActivity.this,sorciere_game.class);
                     intent.putExtra("ROOM_CODE",roomCode);
@@ -76,7 +76,7 @@ public class RevealSorciereActivity extends AppCompatActivity {
                 Integer nbStarts = snapshot.child("nbStarts").getValue(Integer.class);
                 List<User> users = snapshot.child("users").getValue(new GenericTypeIndicator<List<User>>() {
                 });
-                if(nbStarts==2*users.size()){
+                if(nbStarts==users.size()){
                     Intent intent = new Intent(RevealSorciereActivity.this,sorciere_game.class);
                     intent.putExtra("ROOM_CODE",roomCode);
                     intent.putExtra("USER_ROLE","sorciere");
