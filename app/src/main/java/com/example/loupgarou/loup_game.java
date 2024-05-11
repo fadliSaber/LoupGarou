@@ -92,12 +92,10 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
                         scrollView.setVisibility(View.INVISIBLE);
                         break;
                     case 3:
-                        phaseDesc.setText("Phase 4:");
-                        NightDesc.setText("Jour "+x+":");
-                        gameDesc.setText("C’est le matin, le village se réveille.\n" +
-                                "Discutez et votez un joueur\n" +
-                                "pour l’éliminer");
-                        scrollView.setVisibility(View.INVISIBLE);
+                        Intent intent = new Intent(loup_game.this,generalVoteActivity.class);
+                        intent.putExtra("ROOM_CODE",roomCode);
+                        intent.putExtra("USER_ROLE","loup");
+                        startActivity(intent);
                         break;
                 }
             }

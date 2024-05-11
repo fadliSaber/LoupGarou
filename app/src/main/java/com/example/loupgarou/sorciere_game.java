@@ -113,14 +113,10 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
                         scrollView.setVisibility(View.INVISIBLE);
                         break;
                     case 3:
-                        phaseDesc.setText("Phase 4:");
-                        NightDesc.setText("Jour "+x+":");
-                        gameDesc.setText("C’est le matin, le village se réveille.\n" +
-                                "Discutez et votez un joueur\n" +
-                                "pour l’éliminer");
-                        killBtn.setVisibility(View.INVISIBLE);
-                        ReviveBtn.setVisibility(View.INVISIBLE);
-                        scrollView.setVisibility(View.INVISIBLE);
+                        Intent intent = new Intent(sorciere_game.this,generalVoteActivity.class);
+                        intent.putExtra("ROOM_CODE",roomCode);
+                        intent.putExtra("USER_ROLE","sorciere");
+                        startActivity(intent);
                         break;
                 }
             }

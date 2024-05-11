@@ -64,7 +64,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             return "loup_game";
         } else if (context instanceof voyante_game){
             return "voyante_game";
-        }else {
+        } else if (context instanceof generalVoteActivity){
+            return "generalVoteActivity";
+        }
+        else {
             return "unknown";
         }
     }

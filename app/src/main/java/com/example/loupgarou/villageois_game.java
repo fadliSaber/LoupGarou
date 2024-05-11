@@ -35,7 +35,6 @@ public class villageois_game extends AppCompatActivity {
 
         Intent intent = getIntent();
         roomCode = intent.getStringExtra("ROOM_CODE");
-        userRole = intent.getStringExtra("USER_ROLE");
         phaseDesc = findViewById(R.id.textView11);
         gameDesc = findViewById(R.id.textView12);
         NightDesc = findViewById(R.id.textView4);
@@ -46,7 +45,7 @@ public class villageois_game extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 gameStep = snapshot.getValue(Integer.class);
-                int x = gameStep/4 + 1;
+                Integer x = gameStep/4 + 1;
                 switch (gameStep%4) {
                     case 0:
                         phaseDesc.setText("Phase 1:");
@@ -69,11 +68,10 @@ public class villageois_game extends AppCompatActivity {
                                 "la véritable personnalité");
                         break;
                     case 3:
-                        phaseDesc.setText("Phase 4:");
-                        NightDesc.setText("Jour "+x+":");
-                        gameDesc.setText("C’est le matin, le village se réveille.\n" +
-                                "Discutez et votez un joueur\n" +
-                                "pour l’éliminer");
+                        Intent intent = new Intent(villageois_game.this,generalVoteActivity.class);
+                        intent.putExtra("ROOM_CODE",roomCode);
+                        intent.putExtra("USER_ROLE","villageois");
+                        startActivity(intent);
                         break;
                 }
             }
