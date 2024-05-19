@@ -35,7 +35,7 @@ public class generalVoteActivity extends AppCompatActivity implements RecyclerVi
     private RecyclerViewAdapter adapter;
     private List<User> userList,userList2,userList3;
     private String userSelectedId,userIdMax;
-    private int max_ = 0,count2 = 0;
+    private int max_ = 0,count2 = 0,loups = 0;
     private TextView gameDesc,phaseDesc,NightDesc;
 
 
@@ -58,6 +58,8 @@ public class generalVoteActivity extends AppCompatActivity implements RecyclerVi
         gameDesc = findViewById(R.id.textView12);
         NightDesc = findViewById(R.id.textView4);
 
+        loups = 0;
+
         listUsers();
 
     }
@@ -71,7 +73,10 @@ public class generalVoteActivity extends AppCompatActivity implements RecyclerVi
                 count2 = 0;
                 for(DataSnapshot snapshot1:snapshot.child("users").getChildren()) {
                     User user = snapshot1.getValue(User.class);
-                    users.add(user);
+                    if(user.getState().equals("actif")){
+                        users.add(user);
+                        if(user.getRole().equals("loup")) loups++;
+                    }
                 }
                 gameStep = snapshot.child("gameStep").getValue(Integer.class);
                 int x = gameStep/4 + 1;
@@ -122,14 +127,39 @@ public class generalVoteActivity extends AppCompatActivity implements RecyclerVi
                     roomRef.child(roomCode).child("users").setValue(userList2);
                     roomRef.child(roomCode).child("nbStarts").setValue(nbStarts+1);
                     if(nbStarts+1==count2) {
+                        Log.w("counttttt","count: "+count2);
                         User user = userList2.get(posMax);
                         user.setState("killed");
+                        Log.w("loups","n :"+posMax);
                         userList2.set(posMax,user);
+
+                        if(2*loups>=count2) {
+                            roomRef.child(roomCode).child("users").setValue(userList2);
+                            roomRef.child(roomCode).child("nbStarts").setValue(0);
+                            roomRef.child(roomCode).child("gameStep").setValue(gameStep + 1);
+                            Toast.makeText(generalVoteActivity.this, "The role was : " + user.getRole(), Toast.LENGTH_LONG).show();
+                        }else if(loups==0) {
+                            roomRef.child(roomCode).child("users").setValue(userList2);
+                            roomRef.child(roomCode).child("nbStarts").setValue(0);
+                            roomRef.child(roomCode).child("gameStep").setValue(gameStep + 2);
+                            Toast.makeText(generalVoteActivity.this, "The role was : " + user.getRole(), Toast.LENGTH_LONG).show();
+                        }else {
+                            roomRef.child(roomCode).child("users").setValue(userList2);
+                            roomRef.child(roomCode).child("nbStarts").setValue(0);
+                            roomRef.child(roomCode).child("gameStep").setValue(gameStep + 3);
+                            Toast.makeText(generalVoteActivity.this, "The role was : " + user.getRole(), Toast.LENGTH_LONG).show();
+                        }
+
                         //check if nbr loup > nbr others to quit and announce winners
-                        roomRef.child(roomCode).child("users").setValue(userList2);
-                        roomRef.child(roomCode).child("nbStarts").setValue(0);
-                        roomRef.child(roomCode).child("gameStep").setValue(gameStep+1);
-                        Toast.makeText(generalVoteActivity.this,"The role was : "+user.getRole(),Toast.LENGTH_LONG).show();
+                        /*
+                        else {
+                            roomRef.child(roomCode).child("users").setValue(userList2);
+                            roomRef.child(roomCode).child("nbStarts").setValue(0);
+                            roomRef.child(roomCode).child("gameStep").setValue(gameStep + 1);
+                            Toast.makeText(generalVoteActivity.this, "The role was : " + user.getRole(), Toast.LENGTH_LONG).show();
+                        }
+
+                         */
                     }
                 }
 

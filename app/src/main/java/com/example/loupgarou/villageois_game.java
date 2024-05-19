@@ -46,7 +46,7 @@ public class villageois_game extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 gameStep = snapshot.getValue(Integer.class);
                 Integer x = gameStep/4 + 1;
-                switch (gameStep%4) {
+                switch (gameStep%6) {
                     case 0:
                         phaseDesc.setText("Phase 1:");
                         NightDesc.setText("Nuit "+x+":");
@@ -72,6 +72,16 @@ public class villageois_game extends AppCompatActivity {
                         intent.putExtra("ROOM_CODE",roomCode);
                         intent.putExtra("USER_ROLE","villageois");
                         startActivity(intent);
+                        break;
+                    case 4:
+                        Intent intent1 = new Intent(villageois_game.this,villageoisLoss.class);
+                        intent1.putExtra("ROOM_CODE",roomCode);
+                        startActivity(intent1);
+                        break;
+                    case 5:
+                        Intent intent2 = new Intent(villageois_game.this,loupLoss.class);
+                        intent2.putExtra("ROOM_CODE",roomCode);
+                        startActivity(intent2);
                         break;
                 }
             }

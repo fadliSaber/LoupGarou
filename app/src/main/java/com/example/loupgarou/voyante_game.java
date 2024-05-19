@@ -63,7 +63,7 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 gameStep = snapshot.getValue(Integer.class);
                 int x = gameStep/4 + 1;
-                switch (gameStep % 4) {
+                switch (gameStep % 6) {
                     case 0:
                         uRevealUser.setText("Phase 1:");
                         revealUser.setText("Nuit "+x+":");
@@ -93,6 +93,17 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
                         intent.putExtra("USER_ROLE","voyante");
                         startActivity(intent);
                         break;
+
+                    case 4:
+                        Intent intent1 = new Intent(voyante_game.this,villageoisLoss.class);
+                        intent1.putExtra("ROOM_CODE",roomCode);
+                        startActivity(intent1);
+                        break;
+                    case 5:
+                        Intent intent2 = new Intent(voyante_game.this,loupLoss.class);
+                        intent2.putExtra("ROOM_CODE",roomCode);
+                        startActivity(intent2);
+                        break;
                 }
             }
 
@@ -111,8 +122,13 @@ public class voyante_game extends AppCompatActivity implements RecyclerViewAdapt
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userList = snapshot.getValue(new GenericTypeIndicator<List<User>>() {
-                });
+                userList.clear();
+                for(DataSnapshot snapshot1:snapshot.getChildren()) {
+                    User user = snapshot1.getValue(User.class);
+                    if(!user.getState().equals("inactif") || !user.getRole().equals("voyante")){
+                        userList.add(user);
+                    }
+                }
                 users = userList;
                 adapter = new RecyclerViewAdapter((ArrayList<User>) users, voyante_game.this, "blue",voyante_game.this);
                 GridLayoutManager layoutManager = new GridLayoutManager(voyante_game.this, 3);

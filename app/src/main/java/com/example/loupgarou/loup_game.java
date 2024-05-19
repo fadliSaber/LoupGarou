@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +41,9 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
     private TextView gameDesc,phaseDesc,NightDesc;
     private ScrollView scrollView;
 
+    public ValueEventListener valueEventListener;
+    private BroadcastReceiver finishReceiver;
+
 
 
     @Override
@@ -61,23 +67,23 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
         scrollView = findViewById(R.id.scrollView2);
 
         listUsers();
-        roomRef.child(roomCode).child("gameStep").addValueEventListener(new ValueEventListener() {
+        valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 gameStep = snapshot.getValue(Integer.class);
-                int x = gameStep/4 + 1;
-                switch (gameStep%4) {
+                int x = gameStep / 4 + 1;
+                switch (gameStep % 6) {
                     case 0:
                         listUsers();
                         phaseDesc.setText("Phase 1:");
-                        NightDesc.setText("Nuit "+x+":");
+                        NightDesc.setText("Nuit " + x + ":");
                         gameDesc.setText("Votez pour la cible que\n" +
                                 "vous voulez eliminer");
                         scrollView.setVisibility(View.VISIBLE);
                         break;
                     case 1:
                         phaseDesc.setText("Phase 2:");
-                        NightDesc.setText("Nuit "+x+":");
+                        NightDesc.setText("Nuit " + x + ":");
                         gameDesc.setText("La Sorcière se réveille. Va-t-elle \n" +
                                 "utiliser sa potion de guérison, \n" +
                                 "ou d’empoisonnement ?");
@@ -85,17 +91,29 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
                         break;
                     case 2:
                         phaseDesc.setText("Phase 3:");
-                        NightDesc.setText("Nuit "+x+":");
+                        NightDesc.setText("Nuit " + x + ":");
                         gameDesc.setText("La Voyante se réveille, et désigne \n" +
                                 "un joueur dont elle veut sonder \n" +
                                 "la véritable personnalité");
                         scrollView.setVisibility(View.INVISIBLE);
                         break;
                     case 3:
-                        Intent intent = new Intent(loup_game.this,generalVoteActivity.class);
-                        intent.putExtra("ROOM_CODE",roomCode);
-                        intent.putExtra("USER_ROLE","loup");
+                        Intent intent = new Intent(loup_game.this, generalVoteActivity.class);
+                        intent.putExtra("ROOM_CODE", roomCode);
+                        intent.putExtra("USER_ROLE", "loup");
                         startActivity(intent);
+                        break;
+                    case 4:
+                        Intent intent1 = new Intent(loup_game.this, villageoisLoss.class);
+                        intent1.putExtra("ROOM_CODE", roomCode);
+                        startActivity(intent1);
+                        finish();
+                        break;
+                    case 5:
+                        Intent intent2 = new Intent(loup_game.this, loupLoss.class);
+                        intent2.putExtra("ROOM_CODE", roomCode);
+                        startActivity(intent2);
+                        finish();
                         break;
                 }
             }
@@ -104,11 +122,26 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
+        roomRef.child(roomCode).child("gameStep").addValueEventListener(valueEventListener);
 
-
+        finishReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if ("FINISH_ALL_ACTIVITIES".equals(intent.getAction())) {
+                    // Clean up resources
+                    if (roomRef != null && valueEventListener != null) {
+                        roomRef.removeEventListener(valueEventListener);
+                    }
+                    // Finish the activity
+                    finish();
+                }
+            }
+        };
+        registerReceiver(finishReceiver, new IntentFilter("FINISH_ALL_ACTIVITIES"));
 
     }
+
 
     public void listUsers() {
         roomRef.child(roomCode).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -120,9 +153,12 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
                 for(DataSnapshot snapshot1:snapshot.getChildren()) {
                     User user = snapshot1.getValue(User.class);
                     users.add(user);
-                    if(user.getRole().equals("loup")) {
-                        count++;
-                    }else userList.add(user);
+                    if(user.getState().equals("actif")) {
+                        if(user.getRole().equals("loup")) {
+                            count++;
+                        }else userList.add(user);
+                    }
+
                 }
                 count2 = users.size();
                 adapter = new RecyclerViewAdapter((ArrayList<User>) userList, loup_game.this, "red",loup_game.this);
@@ -137,6 +173,7 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
             }
         });
     }
+
 
     @Override
     public void onUserClick(String userId, String activity) {
