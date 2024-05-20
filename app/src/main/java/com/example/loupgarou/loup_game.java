@@ -125,21 +125,6 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
         };
         roomRef.child(roomCode).child("gameStep").addValueEventListener(valueEventListener);
 
-        finishReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if ("FINISH_ALL_ACTIVITIES".equals(intent.getAction())) {
-                    // Clean up resources
-                    if (roomRef != null && valueEventListener != null) {
-                        roomRef.removeEventListener(valueEventListener);
-                    }
-                    // Finish the activity
-                    finish();
-                }
-            }
-        };
-        registerReceiver(finishReceiver, new IntentFilter("FINISH_ALL_ACTIVITIES"));
-
     }
 
 

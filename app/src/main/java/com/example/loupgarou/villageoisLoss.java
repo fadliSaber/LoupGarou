@@ -43,8 +43,6 @@ public class villageoisLoss extends AppCompatActivity {
     }
 
     private void backFun(View v) {
-        Intent intent = new Intent("FINISH_ALL_ACTIVITIES");
-        sendBroadcast(intent);
         startActivity(new Intent(villageoisLoss.this,MainActivity.class));
     }
 }

@@ -41,25 +41,6 @@ public class loupLoss extends AppCompatActivity {
     }
 
     private void backFun(View v) {
-        roomRef.child(roomCode).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.w("roomDeletion","room deleted succesfully");
-                        }
-                    });
-                }else{
-                    startActivity(new Intent(loupLoss.this,MainActivity.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        startActivity(new Intent(loupLoss.this,MainActivity.class));
     }
 }

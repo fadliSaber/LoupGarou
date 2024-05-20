@@ -136,6 +136,7 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
 
             }
         });
+
     }
 
     public void listUsers() {
