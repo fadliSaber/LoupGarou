@@ -129,10 +129,13 @@ public class generalVoteActivity extends AppCompatActivity implements RecyclerVi
                     if(nbStarts+1==count2) {
                         Log.w("counttttt","count: "+count2);
                         User user = userList2.get(posMax);
-                        user.setState("killed");
+                        user.setState("inactif");
+                        if(user.getRole().equals("loup")) loups--;
                         Log.w("loups","n :"+posMax);
                         userList2.set(posMax,user);
-
+                        for(User user1:userList2){
+                            user1.setVote(0);
+                        }
                         if(2*loups>=count2) {
                             roomRef.child(roomCode).child("users").setValue(userList2);
                             roomRef.child(roomCode).child("nbStarts").setValue(0);
@@ -149,17 +152,6 @@ public class generalVoteActivity extends AppCompatActivity implements RecyclerVi
                             roomRef.child(roomCode).child("gameStep").setValue(gameStep + 3);
                             Toast.makeText(generalVoteActivity.this, "The role was : " + user.getRole(), Toast.LENGTH_LONG).show();
                         }
-
-                        //check if nbr loup > nbr others to quit and announce winners
-                        /*
-                        else {
-                            roomRef.child(roomCode).child("users").setValue(userList2);
-                            roomRef.child(roomCode).child("nbStarts").setValue(0);
-                            roomRef.child(roomCode).child("gameStep").setValue(gameStep + 1);
-                            Toast.makeText(generalVoteActivity.this, "The role was : " + user.getRole(), Toast.LENGTH_LONG).show();
-                        }
-
-                         */
                     }
                 }
 

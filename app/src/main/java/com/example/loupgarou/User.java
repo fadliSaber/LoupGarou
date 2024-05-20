@@ -5,17 +5,19 @@ public class User {
     private String state;
     private String role;
     private int vote;
+    private String emailName;
 
 
 
     public User() {
     }
 
-    public User(String id, String state, String role,int vote) {
+    public User(String id, String state, String role,int vote,String emailName) {
         this.id = id;
         this.state = state;
         this.role = role;
         this.vote = vote;
+        this.emailName = emailName;
     }
 
     public String getId() {
@@ -49,5 +51,10 @@ public class User {
     public void setVote(int vote) {
         this.vote = vote;
     }
+
+    public String getEmailName() {
+        return emailName;
+    }
+    public void setEmailName(String emailName) {this.emailName = emailName;}
 }
 

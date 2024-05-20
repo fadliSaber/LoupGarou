@@ -41,7 +41,6 @@ public class createAccountActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         emailfield = findViewById(R.id.editTextText2);
         passwordfield = findViewById(R.id.editTextText3);
-        passwordconfirmedfield = findViewById(R.id.editTextText4);
         signinbutton = findViewById(R.id.editTextText5);
 
         signinbutton.setOnClickListener(new View.OnClickListener() {

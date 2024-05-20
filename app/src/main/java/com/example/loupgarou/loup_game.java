@@ -211,6 +211,9 @@ public class loup_game extends AppCompatActivity implements RecyclerViewAdapter.
                         User user = userList2.get(posMax);
                         user.setState("killed");
                         userList2.set(posMax,user);
+                        for(User user1:userList2){
+                            user1.setVote(0);
+                        }
                         Log.w("userVote","vote: "+user.getVote());
                         roomRef.child(roomCode).child("users").setValue(userList2);
                         roomRef.child(roomCode).child("gameStep").setValue(gameStep+1);

@@ -46,7 +46,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         User user = usersDataArrayList.get(position);
-        holder.name.setText(user.getState());
+        holder.name.setText(new StringBuilder().append(user.getEmailName()).append("\n").append(user.getState()).toString());
         //holder.imgid.setImageResource(recyclerData.getImgid());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

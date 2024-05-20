@@ -172,7 +172,7 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
                 for(DataSnapshot snapshot1:snapshot.getChildren()) {
                     User user = snapshot1.getValue(User.class);
                     if(user.getId().equals(userSelectedId)){
-                        user.setState("killed");
+                        user.setState("inactif");
                     }
                     userList.add(user);
                 }
@@ -195,8 +195,9 @@ public class sorciere_game extends AppCompatActivity implements RecyclerViewAdap
                 userList1.clear();
                 for(DataSnapshot snapshot1:snapshot.getChildren()) {
                     User user = snapshot1.getValue(User.class);
-                    if(user.getState().equals("killed")){
+                    if(user.getState().equals("killed") && user.getId().equals(userSelectedId)){
                         user.setState("actif");
+                        user.setVote(0);
                     }
                     userList1.add(user);
                 }
